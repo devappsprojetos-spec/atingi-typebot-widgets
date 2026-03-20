@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;padding:0;min-height:320px}
+.wrap{width:100%;max-width:480px;position:relative;border-radius:16px;overflow:hidden;background:#fff;border:1px solid #e8e8e8;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.inner{padding:20px;display:flex;flex-direction:column;gap:10px;filter:blur(5px);-webkit-filter:blur(5px);pointer-events:none;user-select:none}
+.row-perfil{display:flex;align-items:center;gap:8px}
+.perfil-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.perfil-nome{font-size:13px;font-weight:700;color:#111}
+.section-label{font-size:9px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#aaa;margin-bottom:4px}
+.content-block{background:#f8f9fa;border-radius:10px;padding:12px 14px;border:1px solid #f0f0f0}
+.gargalo-text{font-size:11px;color:#444;line-height:1.6}
+.step-item{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px solid #ebebeb}
+.step-item:last-child{border-bottom:none}
+.step-n{width:18px;height:18px;border-radius:50%;background:#02CE37;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-t{font-size:11px;color:#444;line-height:1.5}
+.overlay{position:absolute;inset:0;border-radius:16px;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(248,249,250,0.4);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.lock-ring{width:48px;height:48px;border-radius:50%;background:#fff;border:2px solid #02CE37;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(2,206,55,0.18)}
+.overlay-title{font-size:15px;font-weight:800;color:#111;text-align:center}
+.overlay-sub{font-size:12px;color:#666;text-align:center;max-width:210px;line-height:1.5}
+.overlay-hint{font-size:10px;color:#aaa}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="inner" id="inner">
+    <div class="row-perfil">
+      <div class="perfil-dot" id="dot"></div>
+      <div class="perfil-nome" id="perfil-nome"></div>
+    </div>
+    <div class="content-block">
+      <div class="section-label">Perfil</div>
+      <div class="gargalo-text" id="perfil-desc"></div>
+    </div>
+    <div class="content-block">
+      <div class="section-label">Seu principal gargalo</div>
+      <div class="gargalo-text" id="gargalo"></div>
+    </div>
+    <div class="content-block">
+      <div class="section-label">Próximos passos</div>
+      <div id="steps"></div>
+    </div>
+  </div>
+  <div class="overlay">
+    <div class="lock-ring">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="#02CE37" stroke-width="2.2"><rect x="3" y="10" width="16" height="10" rx="2"/><path d="M7 10V7a4 4 0 0 1 8 0v3"/></svg>
+    </div>
+    <div class="overlay-title">Seu Raio-X está pronto</div>
+    <div class="overlay-sub">Informe seus dados para liberar o diagnóstico completo</div>
+    <div class="overlay-hint">Gratuito — sem compromisso</div>
+  </div>
+</div>
+<script>
+var p=new URLSearchParams(location.search);
+var idx=parseInt(p.get('perfil'))||0;
+if(idx<0||idx>3)idx=0;
+var D=[
+  {cor:'#ef4444',nome:'Operação no Caos Reativo',
+   desc:'Sua operação funciona mais na reação do que na condução. As prioridades chegam de forma confusa, o acompanhamento depende da sua presença e os problemas aparecem quando já são crise.',
+   gargalo:'A operação não tem uma estrutura que guie o time sem você. Cada semana começa do zero porque falta um ponto único de prioridade, visibilidade e acompanhamento.',
+   steps:['Definir prioridades únicas visíveis para todo o time','Centralizar metas e acompanhamento em um único sistema','Criar cadência mínima de check-in por área (15 min/semana)','Estabelecer alertas que avisem antes do problema virar crise']},
+  {cor:'#f59e0b',nome:'Dependente da Liderança',
+   desc:'Sua operação tem estrutura — mas ainda depende demais de você para manter o ritmo. O time executa quando você está presente, mas quando você desvia a atenção, o andamento cai.',
+   gargalo:'A execução está apoiada em você, não em processos. Isso cria um teto invisível: a operação só cresce até onde você consegue acompanhar pessoalmente.',
+   steps:['Tornar metas visíveis e autoexplicativas — sem você precisar repetir','Substituir cobrança manual por indicadores e alertas automáticos','Criar leitura rápida de desvio acessível para o time, não só para você','Reduzir a dependência de validação sua nas decisões operacionais do dia a dia']},
+  {cor:'#f97316',nome:'Com Base, mas Sem Ritmo',
+   desc:'Você já organizou bastante coisa. A base existe — processos, metas, liderança estruturada. Mas a execução ainda acontece de forma irregular, sem cadência consistente entre os ciclos.',
+   gargalo:'Existe base, mas falta previsibilidade. Os desvios aparecem tarde demais para agir bem. O que separa onde você está do próximo nível é consistência na execução — não mais esforço.',
+   steps:['Padronizar ciclos de acompanhamento por área com dados reais','Criar indicadores que antecipam desvios antes que virem problema','Conectar prioridade, acompanhamento e indicador no mesmo fluxo','Reduzir o intervalo entre identificar um risco e tomar uma ação']},
+  {cor:'#02CE37',nome:'Pronto para Ganhar Escala',
+   desc:'Você está à frente da maioria. Sua operação demonstra organização e clareza que poucas empresas do mesmo porte atingem. O desafio agora não é resolver o que está quebrado — é garantir que o que funciona hoje continue funcionando quando a empresa dobrar.',
+   gargalo:'Crescer sem integrar metas, OKRs e KPIs em um fluxo único vai criar um novo tipo de caos — só que em maior escala. A fragmentação que hoje é gerenciável se multiplica com o crescimento.',
+   steps:['Consolidar metas, OKRs e KPIs em um sistema integrado único','Criar visibilidade antecipada para toda a liderança — não só para você','Garantir que a operação dependa do sistema, não do esforço manual','Preparar a estrutura para que novos líderes se integrem rapidamente','Padronizar a cadência de execução para que funcione em qualquer escala']}
+];
+var d=D[idx];
+document.getElementById('dot').style.background=d.cor;
+document.getElementById('perfil-nome').textContent=d.nome;
+document.getElementById('perfil-desc').textContent=d.desc;
+document.getElementById('gargalo').textContent=d.gargalo;
+document.getElementById('steps').innerHTML=d.steps.map(function(s,i){
+  return '<div class="step-item"><div class="step-n">'+(i+1)+'</div><div class="step-t">'+s+'</div></div>';
+}).join('');
+</script>
+</body>
+</html>
