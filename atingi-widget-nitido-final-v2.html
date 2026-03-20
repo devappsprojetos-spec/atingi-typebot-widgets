@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;background:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;padding:6px 3px}
+.card{background:#fff;border-radius:16px;border:1px solid #e8e8e8;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,0.07)}
+.topbar{height:3px}
+.hdr{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid #f0f0f0;gap:8px}
+.logo-mk{width:24px;height:24px;border-radius:6px;background:#02CE37;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-nm{font-size:14px;font-weight:700;color:#111;letter-spacing:-0.3px}
+.logo-nm span{color:#02CE37}
+.badge{margin-left:auto;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.body{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.saud{font-size:12px;color:#666;text-align:center;line-height:1.5;padding-bottom:2px}
+.tag{font-size:9px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#aaa;margin-bottom:7px}
+/* METRICS ROW */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.met{background:#f8f9fa;border-radius:10px;padding:10px 12px;border:1px solid #f0f0f0;text-align:center}
+.met-val{font-size:20px;font-weight:800;line-height:1}
+.met-lbl{font-size:9px;color:#999;margin-top:3px;line-height:1.3}
+.met.hl{background:#fff;border-width:1.5px}
+.met-val.big{font-size:24px}
+.pot-block{border-radius:12px;padding:16px;border:1.5px solid;text-align:center}
+.pot-num{font-size:52px;font-weight:800;line-height:1;margin-bottom:4px}
+.pot-ttl{font-size:12px;font-weight:700;margin-bottom:8px}
+.pot-arg{font-size:11px;line-height:1.6}
+/* RADAR SVG */
+.radar-wrap{background:#f8f9fa;border-radius:12px;padding:14px;border:1px solid #f0f0f0}
+.radar-inner{display:flex;gap:12px;align-items:flex-start}
+.radar-svg-wrap{flex-shrink:0}
+.dim-legend{flex:1;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.dim-item{display:flex;align-items:center;gap:6px}
+.dim-bar-wrap{flex:1;height:5px;background:#ebebeb;border-radius:3px;overflow:hidden}
+.dim-bar{height:100%;border-radius:3px}
+.dim-nm{font-size:9px;color:#888;width:60px;flex-shrink:0}
+.dim-sc{font-size:9px;color:#bbb;width:16px;text-align:right;flex-shrink:0}
+/* GARGALO */
+.gargalo{border-radius:10px;padding:12px 14px;border:1px solid;display:flex;gap:9px;align-items:flex-start}
+.g-icon{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.g-text{font-size:11px;color:#333;line-height:1.6}
+.g-text strong{font-weight:700}
+/* BENCHMARK */
+.bench{border-radius:10px;padding:11px 13px;border:1px solid #e8f5e9;background:#f0fdf4;display:flex;gap:9px;align-items:flex-start}
+.bench-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.bench-text{font-size:11px;color:#1a5c2a;line-height:1.6}
+.bench-text strong{font-weight:700;color:#02CE37}
+/* STEPS */
+.steps-box{background:#f8f9fa;border-radius:12px;padding:13px 14px;border:1px solid #f0f0f0}
+.step{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #ebebeb}
+.step:last-child{border-bottom:none;padding-bottom:0}
+.step-n{width:18px;height:18px;border-radius:50%;background:#02CE37;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-t{font-size:11px;color:#333;line-height:1.5}
+.step-t strong{font-weight:600;color:#111}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="topbar" id="topbar"></div>
+  <div class="hdr">
+    <div class="logo-mk"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L12.5 12H1.5L7 1.5Z" fill="white"/></svg></div>
+    <div class="logo-nm">ating<span>i</span></div>
+    <div class="badge" id="badge"></div>
+  </div>
+  <div class="body">
+    <div class="saud" id="saud" style="display:none"></div>
+
+    <!-- MÉTRICAS -->
+    <div>
+      <div class="tag">Diagnóstico operacional</div>
+      <div class="metrics" id="metrics"></div>
+    </div>
+
+    <!-- RADAR -->
+    <div class="radar-wrap">
+      <div class="tag">Maturidade por dimensão</div>
+      <div class="radar-inner">
+        <div class="radar-svg-wrap">
+          <svg id="radar" width="130" height="130" viewBox="0 0 130 130"></svg>
+        </div>
+        <div class="dim-legend" id="dim-legend"></div>
+      </div>
+    </div>
+
+    <!-- GARGALO -->
+    <div class="gargalo" id="gargalo">
+      <div class="g-icon" id="g-icon">!</div>
+      <div class="g-text" id="g-text"></div>
+    </div>
+
+    <!-- BENCHMARK -->
+    <div class="bench" id="bench">
+      <div class="bench-icon">📊</div>
+      <div class="bench-text" id="bench-text"></div>
+    </div>
+
+    <!-- PRÓXIMOS PASSOS -->
+    <div class="steps-box">
+      <div class="tag">Seus próximos passos</div>
+      <div id="steps"></div>
+    </div>
+
+    <!-- POTENCIAL -->
+    <div class="pot-block" id="pot-block">
+      <div class="pot-num" id="pot-num"></div>
+      <div class="pot-ttl" id="pot-ttl">de potencial de melhoria com o sistema certo</div>
+      <div class="pot-arg" id="pot-arg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var pr = new URLSearchParams(location.search);
+var idx  = parseInt(pr.get('perfil')) || 0;
+var nome = pr.get('nome') || '';
+if(idx<0||idx>3) idx=0;
+
+var D = [
+  { cor:'#ef4444', bg:'#fef2f2', brd:'#fca5a5',
+    nome:'Caos Reativo',
+    potencial:'62%',
+    potencial_arg:'Operações no estágio Caos Reativo que estruturam prioridade, visibilidade e acompanhamento costumam ver esse salto em 4 a 8 semanas — sem contratar mais pessoas.',
+    metrics:[
+      {val:'🔴', lbl:'Nível de maturidade', sub:'Estrutura básica ainda ausente'},
+      {val:'5 de 8', lbl:'Dimensões críticas', sub:'Precisam de atenção imediata'},
+      {val:'baixa', lbl:'Previsibilidade', sub:'Operação reage, não planeja'},
+      {val:'62%', lbl:'Potencial de melhoria', sub:'com o sistema certo', destaque:true}
+    ],
+    dims:[{n:'Dependência',v:1},{n:'Visibilidade',v:1},{n:'Prioridade',v:2},{n:'Alinhamento',v:1},{n:'Antecipação',v:1},{n:'Centraliz.',v:2},{n:'Modelo',v:2},{n:'Gap',v:2}],
+    gargalo:'<strong>Gargalo principal:</strong> A operação não tem estrutura que guie o time sem você. Falta um ponto único de prioridade, visibilidade e acompanhamento — e enquanto isso não mudar, cada semana começa do zero.',
+    bench:'<strong>74% das empresas não bateram metas em 2024</strong> — e a principal causa é a mesma do seu perfil: falta de estrutura de acompanhamento, não falta de esforço. Operações no estágio Caos Reativo costumam resolver isso em 4 a 8 semanas com o sistema certo.',
+    steps:[
+      {t:'Definir prioridades únicas', d:'Uma lista central de prioridades visível para todo o time — sem você precisar repetir.'},
+      {t:'Centralizar metas em um sistema', d:'Enquanto cada área guarda os números em lugares diferentes, a operação vai continuar espalhada.'},
+      {t:'Criar cadência mínima de check-in', d:'15 minutos por área por semana muda completamente a capacidade de antecipação.'},
+      {t:'Estabelecer alertas de desvio', d:'O objetivo é saber no dia 5, não no dia 25, que algo está saindo do caminho.'}
+    ]
+  },
+  { cor:'#f59e0b', bg:'#fffbeb', brd:'#fde68a',
+    nome:'Dependente da Liderança',
+    potencial:'47%',
+    potencial_arg:'Operações dependentes da liderança que criam autonomia real no time liberam esse potencial em 6 a 10 semanas — sem reorganizar a estrutura atual.',
+    metrics:[
+      {val:'🟡', lbl:'Nível de maturidade', sub:'Estrutura existe, mas frágil'},
+      {val:'3 de 8', lbl:'Dimensões críticas', sub:'Concentradas em autonomia'},
+      {val:'média', lbl:'Previsibilidade', sub:'Depende da sua presença'},
+      {val:'47%', lbl:'Potencial de melhoria', sub:'com o sistema certo', destaque:true}
+    ],
+    dims:[{n:'Dependência',v:1},{n:'Visibilidade',v:2},{n:'Prioridade',v:2},{n:'Alinhamento',v:2},{n:'Antecipação',v:2},{n:'Centraliz.',v:3},{n:'Modelo',v:3},{n:'Gap',v:2}],
+    gargalo:'<strong>Gargalo principal:</strong> A execução está apoiada em você, não em processos. Isso cria um teto invisível — a operação só cresce até onde você consegue acompanhar pessoalmente.',
+    bench:'<strong>50% dos colaboradores não conhecem claramente as metas da empresa</strong> (Runrun.it, 2024). No perfil Dependente da Liderança, essa taxa costuma ser ainda maior. Empresas que tornam metas visíveis e autoexplicativas reduzem em até 40% o volume de alinhamentos manuais.',
+    steps:[
+      {t:'Tornar metas visíveis sem você', d:'O time precisa saber o que priorizar sem precisar te consultar. Isso começa com metas públicas e autoexplicativas.'},
+      {t:'Substituir cobrança por alertas', d:'Indicadores que sinalizam desvio automaticamente eliminam a dependência de você lembrar de cobrar.'},
+      {t:'Criar leitura rápida de desvio', d:'Um painel que o próprio time acessa — não só você — muda quem é responsável por agir.'},
+      {t:'Reduzir validações manuais', d:'Mapeie as decisões que passam por você desnecessariamente e delegue com critérios claros.'}
+    ]
+  },
+  { cor:'#f97316', bg:'#fff7ed', brd:'#fed7aa',
+    nome:'Com Base, Sem Ritmo',
+    potencial:'28%',
+    potencial_arg:'Com a base que você já tem, o caminho para esse salto é mais curto — 3 a 5 semanas de cadência real já transformam previsibilidade e antecipação de desvios.',
+    metrics:[
+      {val:'🟠', lbl:'Nível de maturidade', sub:'Base sólida, falta consistência'},
+      {val:'2 de 8', lbl:'Dimensões críticas', sub:'Antecipação e alinhamento'},
+      {val:'parcial', lbl:'Previsibilidade', sub:'Irregular entre ciclos'},
+      {val:'28%', lbl:'Potencial de melhoria', sub:'com o sistema certo', destaque:true}
+    ],
+    dims:[{n:'Dependência',v:3},{n:'Visibilidade',v:3},{n:'Prioridade',v:3},{n:'Alinhamento',v:2},{n:'Antecipação',v:2},{n:'Centraliz.',v:3},{n:'Modelo',v:3},{n:'Gap',v:4}],
+    gargalo:'<strong>Gargalo principal:</strong> Existe base, mas falta previsibilidade. Os desvios aparecem tarde demais para agir bem. O que separa onde você está do próximo nível é consistência — não mais esforço.',
+    bench:'<strong>Empresas que revisam metas trimestralmente têm 30% mais chances de superar concorrentes</strong> (McKinsey). No perfil Com Base, Sem Ritmo, a revisão existe — mas sem a cadência necessária para antecipar desvios antes que virem problema.',
+    steps:[
+      {t:'Padronizar ciclos de acompanhamento', d:'Check-ins por área com dados reais — não com percepção — criam a cadência que está faltando.'},
+      {t:'Criar indicadores de antecipação', d:'KPIs que alertam antes do problema aparecer transformam reação em prevenção.'},
+      {t:'Conectar prioridade e acompanhamento', d:'Quando meta e indicador vivem em lugares diferentes, a execução perde coerência.'},
+      {t:'Reduzir o intervalo de resposta', d:'O tempo entre identificar um risco e tomar uma ação é o que define se você age a tempo.'}
+    ]
+  },
+  { cor:'#02CE37', bg:'#f0fdf4', brd:'#bbf7d0',
+    nome:'Pronto para Escala',
+    potencial:'15%',
+    potencial_arg:'Sua operação já está no topo — esse potencial está em integração e escala, não em correção. É o salto de quem já faz bem para quem faz consistentemente em qualquer tamanho.',
+    metrics:[
+      {val:'🟢', lbl:'Nível de maturidade', sub:'Estrutura avançada'},
+      {val:'1 de 8', lbl:'Dimensões críticas', sub:'Foco em integração'},
+      {val:'alta', lbl:'Previsibilidade', sub:'Operação conduz, não reage'},
+      {val:'15%', lbl:'Potencial de melhoria', sub:'com o sistema certo', destaque:true}
+    ],
+    dims:[{n:'Dependência',v:4},{n:'Visibilidade',v:4},{n:'Prioridade',v:4},{n:'Alinhamento',v:3},{n:'Antecipação',v:3},{n:'Centraliz.',v:4},{n:'Modelo',v:4},{n:'Gap',v:3}],
+    gargalo:'<strong>Oportunidade principal:</strong> Crescer sem integrar metas, OKRs e KPIs em um fluxo único vai criar novo caos — em maior escala. A fragmentação que hoje é gerenciável se multiplica com o crescimento.',
+    bench:'<strong>Empresas com autonomia real no time têm 50% mais produtividade</strong> (Harvard Business Review). Você já atingiu esse nível operacional — o próximo passo é garantir que ele se mantenha quando a empresa dobrar de tamanho.',
+    steps:[
+      {t:'Integrar metas, OKRs e KPIs', d:'Um fluxo único conectando todos os níveis da operação elimina a fragmentação que escala mal.'},
+      {t:'Criar visibilidade antecipada', d:'O ganho agora está em enxergar antes — não em correr depois. Isso exige dados em tempo real para toda a liderança.'},
+      {t:'Fazer o sistema depender de si mesmo', d:'A operação precisa rodar com clareza mesmo quando novos líderes entram ou você não está presente.'},
+      {t:'Preparar para o próximo tamanho', d:'Processos que funcionam com 40 pessoas precisam ser desenhados para funcionar com 80 sem perder controle.'},
+      {t:'Padronizar a cadência entre áreas', d:'Cada área com seu ritmo cria desalinhamento em escala. Um ciclo unificado resolve antes que cresça.'}
+    ]
+  }
+];
+
+var d = D[idx];
+function dc(v){ return v<=1?'#ef4444':v<=2?'#f59e0b':v<=3?'#f97316':'#02CE37'; }
+
+// Topbar e badge
+document.getElementById('topbar').style.background = d.cor;
+var bdg = document.getElementById('badge');
+bdg.textContent = '● '+d.nome;
+bdg.style.cssText = 'background:'+d.bg+';color:'+d.cor+';border:1px solid '+d.brd+';padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap;flex-shrink:0;margin-left:auto';
+
+// Saudação
+if(nome && nome !== '{{LeadName}}' && nome !== 'null' && nome !== ''){
+  var s = document.getElementById('saud');
+  s.textContent = nome+', aqui está o seu Raio-X operacional 👇';
+  s.style.display = 'block';
+}
+
+// Métricas
+document.getElementById('metrics').innerHTML = d.metrics.map(function(m){
+  var cls = m.destaque ? 'met hl' : 'met';
+  var valStyle = m.destaque ? 'font-size:22px;font-weight:800;color:#02CE37' : 'font-size:20px;font-weight:800;color:'+d.cor;
+  return '<div class="'+cls+'" style="'+(m.destaque?'border-color:#02CE3744':'')+'">' +
+    '<div style="'+valStyle+'">'+m.val+'</div>'+
+    '<div class="met-lbl" style="font-weight:600;color:#333;margin-top:4px;font-size:10px">'+m.lbl+'</div>'+
+    '<div class="met-lbl">'+m.sub+'</div>'+
+  '</div>';
+}).join('');
+
+// Radar SVG (polígono de 8 dimensões)
+(function(){
+  var svg = document.getElementById('radar');
+  var cx=65, cy=65, r=50, n=d.dims.length;
+  var pts=[];
+  for(var i=0;i<n;i++){
+    var ang = (Math.PI*2*i/n) - Math.PI/2;
+    pts.push([cx+r*Math.cos(ang), cy+r*Math.sin(ang)]);
+  }
+  // Grid circles
+  var html = '';
+  [0.25,0.5,0.75,1].forEach(function(f){
+    var poly = pts.map(function(p){ return [cx+(p[0]-cx)*f, cy+(p[1]-cy)*f]; });
+    html += '<polygon points="'+poly.map(function(p){return p[0]+','+p[1];}).join(' ')+'" fill="none" stroke="#ebebeb" stroke-width="1"/>';
+  });
+  // Spokes
+  pts.forEach(function(p){ html += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="#ebebeb" stroke-width="1"/>'; });
+  // Data polygon
+  var dataPts = d.dims.map(function(dim, i){
+    var f = dim.v/4;
+    return [cx+(pts[i][0]-cx)*f, cy+(pts[i][1]-cy)*f];
+  });
+  html += '<polygon points="'+dataPts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="'+d.cor+'33" stroke="'+d.cor+'" stroke-width="1.5"/>';
+  // Dots
+  dataPts.forEach(function(p){ html += '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.5" fill="'+d.cor+'"/>'; });
+  svg.innerHTML = html;
+})();
+
+// Dim legend bars
+document.getElementById('dim-legend').innerHTML = d.dims.map(function(dim){
+  return '<div class="dim-item">'+
+    '<div class="dim-nm">'+dim.n+'</div>'+
+    '<div class="dim-bar-wrap"><div class="dim-bar" style="width:'+(dim.v/4*100)+'%;background:'+dc(dim.v)+'"></div></div>'+
+    '<div class="dim-sc">'+dim.v+'/4</div>'+
+  '</div>';
+}).join('');
+
+// Gargalo
+var gb = document.getElementById('gargalo');
+gb.style.background = d.bg; gb.style.borderColor = d.brd;
+var gi = document.getElementById('g-icon');
+gi.style.background = d.brd; gi.style.color = d.cor;
+document.getElementById('g-text').innerHTML = d.gargalo;
+
+// Benchmark
+document.getElementById('bench-text').innerHTML = d.bench;
+
+// Steps
+document.getElementById('steps').innerHTML = d.steps.map(function(s,i){
+  return '<div class="step">'+
+    '<div class="step-n">'+(i+1)+'</div>'+
+    '<div class="step-t"><strong>'+s.t+'</strong> — '+s.d+'</div>'+
+  '</div>';
+}).join('');
+
+// Potencial block
+var pb = document.getElementById('pot-block');
+pb.style.background = '#f0fdf4';
+pb.style.borderColor = '#02CE3744';
+var pn = document.getElementById('pot-num');
+pn.textContent = d.potencial;
+pn.style.color = '#02CE37';
+document.getElementById('pot-ttl').style.color = '#02CE37';
+document.getElementById('pot-arg').textContent = d.potencial_arg;
+document.getElementById('pot-arg').style.color = '#555';
+
+</script>
+</body>
+</html>
